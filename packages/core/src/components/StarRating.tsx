@@ -3,11 +3,14 @@ import { View, StyleSheet, StyleProp, ViewStyle } from "react-native";
 import { withTheme } from "../theming";
 import type { Theme } from "../styles/DefaultTheme";
 import type { IconSlot } from "../interfaces/Icon";
+import Touchable from "./Touchable";
 
 import {
   COMPONENT_TYPES,
   createStaticNumberProp,
   createNumberProp,
+  createBoolProp,
+  createActionProp,
 } from "@draftbit/types";
 
 type Props = {
@@ -16,6 +19,8 @@ type Props = {
   rating?: number;
   theme: Theme;
   style?: StyleProp<ViewStyle>;
+  feedback?: boolean;
+  onStarPress?: (rating?: number) => void;
 } & IconSlot;
 
 const StarRating: React.FC<Props> = ({
@@ -25,26 +30,38 @@ const StarRating: React.FC<Props> = ({
   rating = 0,
   theme,
   style,
+  feedback = false,
+  onStarPress = () => {},
   ...rest
 }) => {
   const ratingRounded = Math.round(rating * 2) / 2;
-
   return (
     <View style={[styles.container, style]} {...rest}>
-      {[...Array(maxStars)].map((_, i) => (
-        <Icon
-          key={i}
-          name={
-            ratingRounded - i === 0.5
-              ? "MaterialIcons/star-half"
-              : "MaterialIcons/star"
-          }
-          size={starSize}
-          color={
-            ratingRounded > i ? theme.colors.primary : theme.colors.divider
-          }
-        />
-      ))}
+      {[...Array(maxStars)].map((_, i) =>
+        feedback ? (
+          <Touchable onPress={() => onStarPress(i + 1)}>
+            <Icon
+              key={i}
+              name={"MaterialIcons/star"}
+              size={starSize}
+              color={rating > i ? theme.colors.primary : theme.colors.divider}
+            />
+          </Touchable>
+        ) : (
+          <Icon
+            key={i}
+            name={
+              ratingRounded - i === 0.5
+                ? "MaterialIcons/star-half"
+                : "MaterialIcons/star"
+            }
+            size={starSize}
+            color={
+              ratingRounded > i ? theme.colors.primary : theme.colors.divider
+            }
+          />
+        )
+      )}
     </View>
   );
 };
@@ -87,5 +104,10 @@ export const SEED_DATA = {
       max: 10,
       step: 1,
     }),
+    feedback: createBoolProp({
+      label: "feedback",
+      description: "Whether conponent id designed for feedback",
+    }),
+    onStarPress: createActionProp(),
   },
 };
