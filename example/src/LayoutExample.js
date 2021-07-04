@@ -20,7 +20,7 @@ function Box({ width = 50, height = 50 }) {
 }
 
 function LayoutExample({ theme }) {
-  const [starRating, setStarRating] = React.useState(0);
+  const [rating, setRating] = React.useState(0);
   return (
     <ScreenContainer hasSafeArea={false} scrollable={false}>
       <Section title="StarRating">
@@ -28,8 +28,8 @@ function LayoutExample({ theme }) {
         <StarRating
           feedback
           starSize={44}
-          rating={starRating}
-          onStarPress={setStarRating}
+          rating={rating}
+          onStarPress={setRating}
         />
         <StarRating />
         <StarRating

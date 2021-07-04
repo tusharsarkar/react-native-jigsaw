@@ -39,7 +39,7 @@ const StarRating: React.FC<Props> = ({
     <View style={[styles.container, style]} {...rest}>
       {[...Array(maxStars)].map((_, i) =>
         feedback ? (
-          <Touchable onPress={() => onStarPress(i + 1)}>
+          <Touchable key={`${i}`} onPress={() => onStarPress(i + 1)}>
             <Icon
               key={i}
               name={"MaterialIcons/star"}
